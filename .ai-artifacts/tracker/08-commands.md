@@ -1,6 +1,6 @@
 # Commands Implementation
 
-**Status:** Pending  
+**Status:** Complete  
 **Priority:** High
 
 ## Objective
@@ -9,26 +9,28 @@ Implement all 10 commands following the established pattern.
 
 ## Commands
 
-- [ ] `check-device` - list/verify connected devices
-- [ ] `wake` - wake device and dismiss lock
-- [ ] `get-screen` - dump UI XML hierarchy
-- [ ] `tap` - tap coordinates
-- [ ] `type-text` - type text with escaping
-- [ ] `swipe` - swipe gestures
-- [ ] `key` - press keycodes
-- [ ] `screenshot` - capture screen
-- [ ] `launch-app` - launch apps by name/package
-- [ ] `install-apk` - install APKs
+- [x] `check-device` - list/verify connected devices
+- [x] `wake` - wake device and dismiss lock
+- [x] `get-screen` - dump UI XML hierarchy
+- [x] `tap` - tap coordinates
+- [x] `type-text` - type text with escaping
+- [x] `swipe` - swipe gestures
+- [x] `key` - press keycodes
+- [x] `screenshot` - capture screen
+- [x] `launch-app` - launch apps by name/package
+- [x] `install-apk` - install APKs
 
 ## Pure Domain Functions (Core)
 
-- [ ] `src/core/domain/coordinates.ts`
-- [ ] `src/core/domain/text-escape.ts`
-- [ ] `src/core/domain/keycodes.ts`
-- [ ] `src/core/domain/device-parser.ts`
-- [ ] `src/core/domain/app-resolver.ts`
-- [ ] `src/core/domain/screen-dimensions.ts`
+- [x] `src/core/domain/device-parser.ts` - parseDeviceList, findDevice
+- [x] `src/core/domain/text-escape.ts` - escapeForAdbInput, splitTextForInput
 
-## Notes
+## Implementation Pattern
 
-Start with `tap` as reference impl, then replicate pattern.
+Each command:
+1. Parse args with Zod schema
+2. Execute ADB calls via provider
+3. Record calls in trace
+4. Return typed CommandResult
+
+All commands auto-register via `registerCommand()`.

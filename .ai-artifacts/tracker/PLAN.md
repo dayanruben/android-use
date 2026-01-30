@@ -1,6 +1,6 @@
 # Android-Use Implementation Tracker
 
-**Status:** Planning Complete - Ready to Implement  
+**Status:** Implementation Complete (Tests Pending)  
 **Last Updated:** 2026-01-30
 
 ---
@@ -13,36 +13,36 @@
 
 ## Phase 2: Infrastructure
 
-- [ ] [CommandResult & Trace](./04-result-trace.md)
-- [ ] [ADB Provider](./05-adb-provider.md)
-- [ ] [Formatters](./06-formatters.md)
-- [ ] [Registry & Hooks](./07-registry-hooks.md)
+- [x] [CommandResult & Trace](./04-result-trace.md)
+- [x] [ADB Provider](./05-adb-provider.md)
+- [x] [Formatters](./06-formatters.md)
+- [x] [Registry & Hooks](./07-registry-hooks.md)
 
 ## Phase 3: Commands
 
-- [ ] [Commands Implementation](./08-commands.md)
+- [x] [Commands Implementation](./08-commands.md)
 
 ## Phase 4: CLI & Polish
 
-- [ ] [CLI Router](./09-cli-router.md)
-- [ ] [Tests](./10-tests.md)
-- [ ] [Documentation](./11-docs.md)
+- [x] [CLI Router](./09-cli-router.md)
+- [ ] [Tests](./10-tests.md) *(deferred to separate agent)*
+- [x] [Documentation](./11-docs.md)
 
 ---
 
 ## Pre-Ship Checklist
 
-- [ ] 3 abstraction levels (CLI, command API, primitives)
-- [ ] Zod schemas for all inputs/outputs/configs
-- [ ] Commands return `CommandResult` (no primitives)
-- [ ] Configurable timeouts, retries, output format
-- [ ] Provider abstraction (local ADB + mock)
-- [ ] Extension points (hooks/registry/formatters)
-- [ ] Lightweight execution trace on every result
-- [ ] Fail-fast validation + graceful degradation
-- [ ] `--json` structured output supported
-- [ ] Actionable error messages + examples
-- [ ] CLI `--help` and docs updated
+- [x] 3 abstraction levels (CLI, command API, primitives)
+- [x] Zod schemas for all inputs/outputs/configs
+- [x] Commands return `CommandResult` (no primitives)
+- [x] Configurable timeouts, retries, output format
+- [x] Provider abstraction (local ADB + mock)
+- [x] Extension points (hooks/registry/formatters)
+- [x] Lightweight execution trace on every result
+- [x] Fail-fast validation + graceful degradation
+- [x] `--json` structured output supported
+- [x] Actionable error messages + examples
+- [x] CLI `--help` and docs updated
 
 ---
 

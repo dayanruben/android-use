@@ -1,6 +1,6 @@
 # CLI Router
 
-**Status:** Pending  
+**Status:** Complete  
 **Priority:** High
 
 ## Objective
@@ -9,19 +9,26 @@ Implement CLI entry point with argument parsing and dispatch.
 
 ## Subtasks
 
-- [ ] `src/index.ts` - Entry point
-- [ ] `src/shell/cli.ts` - Argument parsing
-- [ ] Global flags handling
-- [ ] Command dispatch to registry
-- [ ] Exit code mapping
+- [x] `src/index.ts` - Entry point
+- [x] `src/shell/cli.ts` - Argument parsing
+- [x] Global flags handling
+- [x] Command dispatch to registry
+- [x] Exit code mapping
 
 ## Global Flags
 
-- `-s, --serial <id>` - Device serial
-- `--adb-path <path>` - ADB binary path
-- `--timeout <ms>` - Timeout in ms
-- `--retries <n>` - Retry count
-- `--json` - JSON output
-- `--verbose` - Verbose logging
-- `--help` - Show help
-- `--version` - Show version
+- [x] `-s, --serial <id>` - Device serial
+- [x] `--adb-path <path>` - ADB binary path
+- [x] `--timeout <ms>` - Timeout in ms
+- [x] `--retries <n>` - Retry count
+- [x] `--json` - JSON output
+- [x] `--verbose` - Verbose logging
+- [x] `--help` - Show help
+- [x] `--version` - Show version
+
+## Implementation
+
+- `parseArgs()` - Parse argv into CliArgs
+- `showHelp()` - Display usage info
+- `showVersion()` - Display version
+- `runCli()` - Main entry, returns exit code

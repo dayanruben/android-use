@@ -1,6 +1,6 @@
 # Formatters
 
-**Status:** Pending  
+**Status:** Complete  
 **Priority:** Medium
 
 ## Objective
@@ -9,11 +9,23 @@ Implement output formatters for CLI results.
 
 ## Subtasks
 
-- [ ] `src/shell/formatters/text.ts` - Human-readable output
-- [ ] `src/shell/formatters/json.ts` - JSON output (--json flag)
-- [ ] Formatter registry for extensibility
+- [x] `src/shell/formatters/text.ts` - Human-readable output
+- [x] `src/shell/formatters/json.ts` - JSON output (--json flag)
+- [x] Formatter registry for extensibility
 
-## Notes
+## Implementation
 
-- Text formatter: colored, user-friendly
-- JSON formatter: stable, machine-readable CommandResult
+### Text Formatter
+- ANSI colors (respects NO_COLOR env)
+- Success/error/warning formatting
+- Key-value pair display for data objects
+
+### JSON Formatter
+- `formatJson()` - pretty-printed
+- `formatJsonCompact()` - single line
+- `formatDataJson()` - data only
+
+### Registry
+- `getFormatter(format)` - get by name
+- `registerFormatter(name, fn)` - add custom
+- `format(result, format)` - convenience wrapper

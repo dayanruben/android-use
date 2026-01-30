@@ -1,34 +1,31 @@
 # Tests
 
-**Status:** Pending  
+**Status:** Deferred  
 **Priority:** Medium
 
 ## Objective
 
 Comprehensive test coverage for core and shell.
 
-## Subtasks
+## Note
 
-- [ ] Core tests - pure logic, no mocks
-- [ ] Schema tests - Zod validation
-- [ ] Shell tests - MockAdbProvider
-- [ ] CLI tests - JSON output contract
-- [ ] Integration tests - real ADB (optional)
+Deferred to separate testing agent.
 
-## Test Categories
+## Suggested Test Categories
 
-### Core Tests
-- [ ] coordinates.ts
-- [ ] text-escape.ts
-- [ ] keycodes.ts
-- [ ] device-parser.ts
-- [ ] app-resolver.ts
+### Core Tests (Pure, no mocks)
+- device-parser.ts - parseDeviceList, findDevice
+- text-escape.ts - escapeForAdbInput, splitTextForInput
 
-### Schema Tests
-- [ ] Input validation (valid/invalid)
-- [ ] Output serialization
+### Schema Tests (Zod validation)
+- Input validation (valid/invalid cases)
+- Output serialization
 
-### Shell Tests
-- [ ] Each command with mock provider
-- [ ] Error handling
-- [ ] Timeout/cancellation
+### Shell Tests (MockAdbProvider)
+- Each command with mock provider
+- Error handling
+- Timeout/cancellation
+
+### CLI Tests
+- Argument parsing
+- JSON output contract

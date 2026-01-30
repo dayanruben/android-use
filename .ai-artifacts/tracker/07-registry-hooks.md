@@ -1,6 +1,6 @@
 # Registry & Hooks
 
-**Status:** Pending  
+**Status:** Complete  
 **Priority:** Medium
 
 ## Objective
@@ -9,19 +9,37 @@ Implement command registry and lifecycle hooks.
 
 ## Subtasks
 
-- [ ] `src/shell/registry.ts` - Command registry
-- [ ] `registerCommand(name, handler)` function
-- [ ] `onBeforeCommand` hook
-- [ ] `onAfterCommand` hook
-- [ ] CommandContext type
+- [x] `src/shell/registry.ts` - Command registry
+- [x] `registerCommand(name, handler)` function
+- [x] `onBeforeCommand` hook
+- [x] `onAfterCommand` hook
+- [x] CommandContext type
 
-## CommandContext
+## Implementation
 
+### CommandContext
 ```typescript
-type CommandContext = {
+interface CommandContext {
   adb: AdbProvider;
   config: SkillConfig;
   trace: TraceBuilder;
   signal?: AbortSignal;
-};
+}
 ```
+
+### Registry Class
+- `register(name, handler)` - add command
+- `get(name)` - get handler
+- `has(name)` - check existence
+- `list()` - all command names
+- `execute(name, args, ctx)` - run with hooks
+
+### Hooks
+- `onBefore(hook)` - pre-command
+- `onAfter(hook)` - post-command
+- Async support
+
+### Convenience Functions
+- `registerCommand()`
+- `onBeforeCommand()`
+- `onAfterCommand()`

@@ -1,6 +1,6 @@
 # Documentation
 
-**Status:** Pending  
+**Status:** Complete  
 **Priority:** Low
 
 ## Objective
@@ -9,17 +9,20 @@ User-facing documentation for CLI and API.
 
 ## Subtasks
 
-- [ ] README.md - Quick start, examples
-- [ ] SKILL.md - Skill definition for agents
-- [ ] CLI --help text for all commands
-- [ ] API docs (inline JSDoc)
-- [ ] Usage examples
+- [x] README.md - Quick start, examples
+- [ ] SKILL.md - Skill definition for agents *(optional)*
+- [x] CLI --help text for all commands
+- [x] API docs (inline JSDoc)
+- [x] Usage examples
 
 ## README Sections
 
-- Installation
-- Quick Start
-- Commands Reference
-- Configuration
-- Programmatic API
-- Extension Points
+- [x] Installation
+- [x] Quick Start
+- [x] Commands Reference
+- [x] Global Options
+- [x] JSON Output
+- [x] Programmatic API
+- [x] Key Names reference
+- [x] Architecture overview
+- [x] Development commands
