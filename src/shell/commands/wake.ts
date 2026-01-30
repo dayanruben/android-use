@@ -30,10 +30,10 @@ async function wake(
 		serial,
 	};
 
-	// Check if screen is on via dumpsys power
+	// Check if screen is on via dumpsys power (mWakefulness field)
 	let wasAsleep = false;
 	const powerCheck = await ctx.adb.exec(
-		["shell", "dumpsys power | grep 'Display Power'"],
+		["shell", "dumpsys power | grep mWakefulness"],
 		execOpts,
 	);
 	ctx.trace.recordCall(
@@ -42,8 +42,9 @@ async function wake(
 		powerCheck.exitCode,
 	);
 
-	// Parse power state - check for Display Power state=ON in output
-	wasAsleep = !powerCheck.stdout.includes("state=ON");
+	// Parse power state - mWakefulness=Awake means screen is on
+	// Other values: Asleep, Dreaming, Dozing
+	wasAsleep = !powerCheck.stdout.includes("mWakefulness=Awake");
 
 	// Send WAKEUP keycode
 	const wakeResult = await ctx.adb.exec(
