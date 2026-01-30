@@ -19,7 +19,7 @@ const COLORS = {
  */
 function useColors(): boolean {
   // Respect NO_COLOR standard
-  if (Bun.env.NO_COLOR !== undefined) return false;
+  if (Bun.env["NO_COLOR"] !== undefined) return false;
   // Check if stdout is TTY
   return process.stdout.isTTY ?? false;
 }
