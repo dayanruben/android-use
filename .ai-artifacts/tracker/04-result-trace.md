@@ -1,6 +1,6 @@
 # CommandResult & ExecutionTrace
 
-**Status:** Pending  
+**Status:** Complete  
 **Priority:** High
 
 ## Objective
@@ -9,31 +9,18 @@ Implement rich result type and lightweight observability.
 
 ## Subtasks
 
-- [ ] CommandResult factory functions (`ok`, `error`)
-- [ ] ErrorCode type definition
-- [ ] ExecutionTrace builder
-- [ ] Trace start/finish helpers
+- [x] CommandResult factory functions (`ok`, `err`)
+- [x] ErrorCode type definition (10 codes)
+- [x] ExecutionTrace builder
+- [x] Trace start/finish helpers (`createTraceBuilder`)
 
-## CommandResult Shape
+## Implementation
 
-```typescript
-type CommandResult<T> = {
-  success: boolean;
-  exitCode: number;
-  message?: string;
-  data?: T;
-  error?: { code: ErrorCode; message: string };
-  warnings?: string[];
-  trace?: ExecutionTrace;
-  metadata?: Record<string, string | number | boolean>;
-};
-```
+Already implemented in Phase 1 Core Types:
 
-## ErrorCodes
+- `src/core/types/result.ts` - CommandResult<T>, ok(), err(), isOk(), isErr(), map()
+- `src/core/types/trace.ts` - ExecutionTrace, TraceBuilder, createTraceBuilder()
 
-- INVALID_INPUT
-- ADB_FAILED
-- TIMEOUT
-- CANCELLED
-- DEVICE_NOT_FOUND
-- UNKNOWN
+## Notes
+
+Moved to core types since these are pure data structures.

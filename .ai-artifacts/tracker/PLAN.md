@@ -7,9 +7,9 @@
 
 ## Phase 1: Foundation
 
-- [ ] [Project Setup](./01-project-setup.md)
-- [ ] [Core Types](./02-core-types.md)
-- [ ] [Zod Contracts](./03-zod-contracts.md)
+- [x] [Project Setup](./01-project-setup.md)
+- [x] [Core Types](./02-core-types.md)
+- [x] [Zod Contracts](./03-zod-contracts.md)
 
 ## Phase 2: Infrastructure
 

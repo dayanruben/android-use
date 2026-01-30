@@ -1,6 +1,6 @@
 # ADB Provider
 
-**Status:** Pending  
+**Status:** Complete  
 **Priority:** High
 
 ## Objective
@@ -9,21 +9,31 @@ Implement provider abstraction for ADB execution.
 
 ## Subtasks
 
-- [ ] `src/shell/providers/adb.ts` - AdbProvider interface
-- [ ] `src/shell/providers/adb-local.ts` - LocalAdbProvider (Bun.$)
-- [ ] `src/shell/providers/adb-mock.ts` - MockAdbProvider (tests)
-- [ ] AbortSignal support for cancellation
-- [ ] Timeout handling
+- [x] `src/shell/providers/adb.ts` - AdbProvider interface
+- [x] `src/shell/providers/adb-local.ts` - LocalAdbProvider (Bun.spawn)
+- [x] `src/shell/providers/adb-mock.ts` - MockAdbProvider (tests)
+- [x] AbortSignal support for cancellation
+- [x] Timeout handling
 
-## Interface
+## Implementation
 
-```typescript
-interface AdbProvider {
-  exec(args: readonly string[], options: ExecOptions): Promise<ADBResult>;
-}
+### Interface (`adb.ts`)
 
-interface ExecOptions {
-  timeoutMs: number;
-  signal?: AbortSignal;
-}
-```
+- `ExecOptions`: timeoutMs, signal, serial
+- `AdbResult`: exitCode, stdout, stderr, durationMs
+- `AdbProvider`: exec(args, options)
+- Helpers: `isAdbSuccess()`, `buildAdbArgs()`
+
+### LocalAdbProvider (`adb-local.ts`)
+
+- Uses `Bun.spawn()` for subprocess
+- Timeout via `setTimeout` + `proc.kill()`
+- AbortSignal listener for cancellation
+- Configurable `adbPath`
+
+### MockAdbProvider (`adb-mock.ts`)
+
+- Pattern-based response matching
+- Call history recording
+- Delay simulation
+- Preset responses: MOCK_DEVICES_RESPONSE, MOCK_UI_DUMP
