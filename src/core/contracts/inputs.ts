@@ -40,6 +40,8 @@ export const GetScreenInputSchema = z.object({
 	serial: SerialSchema,
 	/** Include invisible elements */
 	includeInvisible: z.boolean().default(false),
+	/** Output full XML (default: compact JSON) */
+	full: z.boolean().default(false),
 });
 export type GetScreenInput = z.infer<typeof GetScreenInputSchema>;
 

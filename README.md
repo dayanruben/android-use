@@ -1,115 +1,34 @@
 # android-use
 
-CLI + library for Android device control via ADB.
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/iurysza/android-use/releases)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Bun](https://img.shields.io/badge/Bun-1.3.8+-black.svg)](https://bun.sh)
 
-## Installation
+Control Android devices via ADB. Tap, swipe, type, launch apps, and automate UI interactions.
+
+## Install
 
 ```bash
-bun install
+curl -fsSL https://raw.githubusercontent.com/iurysza/android-use/main/install.sh | bash
 ```
+
+**Prerequisites:** ADB installed, Android device with USB debugging enabled.
 
 ## Quick Start
 
 ```bash
-# List connected devices
-bun run start check-device
-
-# Tap at coordinates
-bun run start tap 500 800
-
-# Type text
-bun run start type-text "Hello World"
-
-# Press key
-bun run start key HOME
-
-# Take screenshot
-bun run start screenshot ./screen.png
-
-# Launch app
-bun run start launch-app com.example.app
+android-use check-device                # List devices
+android-use get-screen                  # Get UI with tap coordinates
+android-use tap 540 960                 # Tap at coordinates
+android-use type-text "Hello"           # Type text
+android-use launch-app com.android.chrome  # Launch app
 ```
 
-## Commands
+## Documentation
 
-| Command | Description | Usage |
-|---------|-------------|-------|
-| `check-device` | List/verify devices | `check-device [serial]` |
-| `wake` | Wake + dismiss lock | `wake [serial]` |
-| `get-screen` | Dump UI XML | `get-screen [serial]` |
-| `tap` | Tap coordinates | `tap <x> <y> [serial]` |
-| `type-text` | Type text | `type-text <text> [serial]` |
-| `swipe` | Swipe gesture | `swipe <x1> <y1> <x2> <y2> [ms] [serial]` |
-| `key` | Press keycode | `key <code\|name> [serial]` |
-| `screenshot` | Capture screen | `screenshot [output] [serial]` |
-| `launch-app` | Launch app | `launch-app <package> [serial]` |
-| `install-apk` | Install APK | `install-apk <path> [serial]` |
-
-## Global Options
-
-```
--s, --serial <id>     Target device
---adb-path <path>     ADB binary path (default: adb)
---timeout <ms>        Timeout (default: 15000)
---retries <n>         Max retries (default: 1)
---json                JSON output
---verbose             Verbose logging
-```
-
-## JSON Output
-
-Use `--json` for structured output:
-
-```bash
-bun run start --json check-device
-```
-
-```json
-{
-  "success": true,
-  "exitCode": 0,
-  "data": { "devices": [...], "count": 1 },
-  "message": "Found 1 device(s)",
-  "trace": { ... }
-}
-```
-
-## Programmatic API
-
-```typescript
-import { tap, checkDevice, registry } from "./src/shell/commands/index.ts";
-import { createLocalAdbProvider } from "./src/shell/providers/index.ts";
-import { createTraceBuilder } from "./src/core/types/trace.ts";
-import { DEFAULT_CONFIG } from "./src/core/contracts/config.ts";
-
-const ctx = {
-  adb: createLocalAdbProvider(),
-  config: DEFAULT_CONFIG,
-  trace: createTraceBuilder("tap"),
-};
-
-const result = await tap(["500", "800"], ctx);
-console.log(result.success); // true
-```
-
-## Key Names
-
-For `key` command: `HOME`, `BACK`, `MENU`, `POWER`, `VOLUME_UP`, `VOLUME_DOWN`, `ENTER`, `TAB`, `DEL`, `ESCAPE`, `DPAD_UP`, `DPAD_DOWN`, `DPAD_LEFT`, `DPAD_RIGHT`, etc.
-
-## Architecture
-
-- **Functional Core**: Pure types, Zod schemas, domain logic (`src/core/`)
-- **Imperative Shell**: ADB provider, commands, CLI (`src/shell/`)
-- **Provider abstraction**: `LocalAdbProvider` (real) + `MockAdbProvider` (tests)
-
-## Development
-
-```bash
-bun run dev        # Watch mode
-bun run typecheck  # Type check
-bun test           # Run tests
-bun run build      # Build
-```
+- [Agent Setup Guide](./examples/AGENTS_GETTING_STARTED.md) - Complete setup and usage guide
+- [Examples](./examples/) - Tutorials and common patterns
+- [Changelog](./CHANGELOG.md)
 
 ## License
 

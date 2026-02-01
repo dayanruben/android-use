@@ -118,7 +118,7 @@ out
 # Nuxt.js build / generate output
 
 .nuxt
-dist
+# dist - committed for npm publish (contains CLI binary)
 
 # Gatsby files
 

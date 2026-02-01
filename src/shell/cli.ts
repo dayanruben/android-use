@@ -114,16 +114,16 @@ USAGE:
   android-use <command> [options] [args]
 
 COMMANDS:
-  check-device [serial]           List/verify connected devices
-  wake [serial]                   Wake device and dismiss lock
-  get-screen [serial]             Dump UI hierarchy as XML
-  tap <x> <y> [serial]            Tap at coordinates
-  type-text <text> [serial]       Type text
-  swipe <x1> <y1> <x2> <y2> [ms]  Swipe gesture
-  key <keycode|name> [serial]     Press keycode (HOME, BACK, etc.)
-  screenshot [output] [serial]    Capture screenshot
-  launch-app <package> [serial]   Launch app
-  install-apk <path> [serial]     Install APK
+   check-device [serial]           List/verify connected devices
+   wake [serial]                   Wake device and dismiss lock
+   get-screen [serial]             Dump UI hierarchy (compact JSON, use --full for XML)
+   tap <x> <y> [serial]            Tap at coordinates
+   type-text <text> [serial]       Type text
+   swipe <x1> <y1> <x2> <y2> [ms]  Swipe gesture
+   key <keycode|name> [serial]     Press keycode (HOME, BACK, etc.)
+   screenshot [output] [serial]    Capture screenshot
+   launch-app <package> [serial]   Launch app
+   install-apk <path> [serial]     Install APK
 
 GLOBAL OPTIONS:
   -s, --serial <id>     Target device serial

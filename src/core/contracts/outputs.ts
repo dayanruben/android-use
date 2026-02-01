@@ -46,12 +46,47 @@ export const WakeOutputSchema = z.object({
 export type WakeOutput = z.infer<typeof WakeOutputSchema>;
 
 /**
+ * Screen element in compact format
+ */
+export const ScreenElementSchema = z.object({
+	text: z.string().default(""),
+	resourceId: z.string().default(""),
+	contentDesc: z.string().default(""),
+	clickable: z.boolean().default(false),
+	scrollable: z.boolean().default(false),
+	focused: z.boolean().default(false),
+	bounds: z.tuple([z.number(), z.number(), z.number(), z.number()]),
+	center: z.tuple([z.number(), z.number()]),
+});
+export type ScreenElement = z.infer<typeof ScreenElementSchema>;
+
+/**
+ * Compact screen output
+ */
+export const CompactScreenOutputSchema = z.object({
+	elements: z.array(ScreenElementSchema),
+	clickable: z.array(ScreenElementSchema),
+	scrollable: z.array(ScreenElementSchema),
+	withText: z.array(ScreenElementSchema),
+	withContentDesc: z.array(ScreenElementSchema),
+});
+export type CompactScreenOutput = z.infer<typeof CompactScreenOutputSchema>;
+
+/**
  * get-screen output
  */
-export const GetScreenOutputSchema = z.object({
-	xml: z.string(),
-	byteSize: z.number().int().nonnegative(),
-});
+export const GetScreenOutputSchema = z.discriminatedUnion("format", [
+	z.object({
+		format: z.literal("full"),
+		xml: z.string(),
+		byteSize: z.number().int().nonnegative(),
+	}),
+	z.object({
+		format: z.literal("compact"),
+		compact: CompactScreenOutputSchema,
+		originalByteSize: z.number().int().nonnegative(),
+	}),
+]);
 export type GetScreenOutput = z.infer<typeof GetScreenOutputSchema>;
 
 /**

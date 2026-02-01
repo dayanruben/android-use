@@ -4,9 +4,12 @@ import { ok, err } from "@core/types/result.ts";
 import type { CommandResult } from "@core/types/result.ts";
 import type { CommandContext } from "@shell/registry.ts";
 import { registerCommand } from "@shell/registry.ts";
+import { parseScreenXml } from "@core/parsers/screen-xml.ts";
+import { ensureCacheDir, getScreenCachePath } from "@core/cache.ts";
+import { writeFile } from "node:fs/promises";
 
 /**
- * get-screen command - dump UI hierarchy as XML
+ * get-screen command - dump UI hierarchy (compact JSON by default)
  */
 async function getScreen(
 	args: string[],
@@ -14,6 +17,7 @@ async function getScreen(
 ): Promise<CommandResult<GetScreenOutput>> {
 	const input = GetScreenInputSchema.safeParse({
 		serial: args[0] ?? null,
+		full: args.includes("--full"),
 		// Note: includeInvisible is not supported by uiautomator dump
 		// The flag is accepted for API consistency but has no effect
 	});
@@ -24,7 +28,7 @@ async function getScreen(
 		});
 	}
 
-	const { serial } = input.data;
+	const { serial, full } = input.data;
 	const execOpts = {
 		timeoutMs: ctx.config.timeoutMs,
 		signal: ctx.signal,
@@ -70,13 +74,49 @@ async function getScreen(
 	// Clean up dump file
 	await ctx.adb.exec(["shell", "rm", dumpPath], execOpts);
 
+	const byteSize = new TextEncoder().encode(xml).length;
+	await ensureCacheDir();
+
+	if (full) {
+		const cachePath = getScreenCachePath("xml");
+		await writeFile(cachePath, xml, "utf-8");
+
+		return ok(
+			{
+				format: "full",
+				xml,
+				byteSize,
+			} as const,
+			{
+				message: `UI hierarchy dumped (${xml.length} chars)`,
+				trace: ctx.trace.finish(),
+			},
+		);
+	}
+
+	const allElements = parseScreenXml(xml);
+
+	const compactOutput = {
+		elements: allElements,
+		clickable: allElements.filter((e) => e.clickable),
+		scrollable: allElements.filter((e) => e.scrollable),
+		withText: allElements.filter((e) => e.text && e.text !== ""),
+		withContentDesc: allElements.filter(
+			(e) => e.contentDesc && e.contentDesc !== "",
+		),
+	};
+
+	const cachePath = getScreenCachePath("json");
+	await writeFile(cachePath, JSON.stringify(compactOutput, null, 2), "utf-8");
+
 	return ok(
 		{
-			xml,
-			byteSize: new TextEncoder().encode(xml).length,
-		},
+			format: "compact",
+			compact: compactOutput,
+			originalByteSize: byteSize,
+		} as const,
 		{
-			message: `UI hierarchy dumped (${xml.length} chars)`,
+			message: `UI hierarchy parsed (${allElements.length} elements, ${byteSize} → ~${Math.round(byteSize * 0.25)} bytes)`,
 			trace: ctx.trace.finish(),
 		},
 	);
