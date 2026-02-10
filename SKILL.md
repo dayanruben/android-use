@@ -32,35 +32,24 @@ Before using this skill:
 
 When this skill is not installed, agents should:
 
-1. **Clone the repository:**
+1. **Run installer (recommended):**
 
    ```bash
-   git clone https://github.com/iurysza/android-use.git ~/.config/opencode/skill/android-use
-   cd ~/.config/opencode/skill/android-use
+   curl -fsSL https://raw.githubusercontent.com/iurysza/android-use/main/install.sh | bash
    ```
 
-2. **Install dependencies:**
+2. **Installed structure:**
+
+   - `~/.config/opencode/skill/android-use/SKILL.md`
+   - `~/.config/opencode/skill/android-use/scripts/android-use`
+   - `~/.config/opencode/skill/android-use/references/`
+   - `~/.config/opencode/skill/android-use/assets/`
+   - `~/.config/opencode/skill/android-use/repo/`
+
+3. **Verify installation:**
 
    ```bash
-   bun install
-   ```
-
-3. **Build the project:**
-
-   ```bash
-   bun run build
-   ```
-
-4. **Create wrapper script:**
-
-   ```bash
-   ln -sf ~/.config/opencode/skill/android-use/dist/index.js ~/.config/opencode/skill/android-use/android-use
-   chmod +x ~/.config/opencode/skill/android-use/android-use
-   ```
-
-5. **Verify installation:**
-   ```bash
-   ~/.config/opencode/skill/android-use/android-use check-device
+   ~/.config/opencode/skill/android-use/scripts/android-use check-device
    ```
 
 ## Quick Start
@@ -307,14 +296,16 @@ android-use key ENTER
 
 ## Agent Examples
 
-See the `examples/` directory in the repository for:
+See the `references/` directory for:
 
-- `basic-device-check.sh` - Verify device connectivity
-- `app-navigation.sh` - Launch and navigate apps
-- `form-filling.sh` - Automated form input
-- `scroll-and-search.sh` - Find content by scrolling
-- `multi-device.sh` - Manage multiple devices
-- `AGENT_WORKFLOWS.md` - Best practices for AI agents
+- `AGENTS_GETTING_STARTED.md` - Setup and command guide
+- `AGENT_WORKFLOWS.md` - End-to-end agent workflows
+- `01-taking-a-screenshot.md` - Capture and verify screenshots
+- `02-opening-an-app.md` - App launch and navigation
+- `03-tapping-a-button.md` - Tap flow from screen JSON
+- `04-filling-a-form.md` - Multi-step form input pattern
+- `05-scrolling-to-find-content.md` - Scroll/search interaction loop
+- `06-handling-dialogs.md` - Popup detection and dismissal
 
 ## JSON Output
 
@@ -367,4 +358,4 @@ This filters ~336 raw nodes → ~55 useful elements (4x smaller)
 
 - GitHub: https://github.com/iurysza/android-use
 - Issues: https://github.com/iurysza/android-use/issues
-- Examples: See `examples/` directory in repository
+- References: See `references/` folder

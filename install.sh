@@ -52,8 +52,18 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-REPO_URL="https://github.com/iurysza/android-use.git"
+REPO_URL="${ANDROID_USE_REPO_URL:-https://github.com/iurysza/android-use.git}"
 SCRIPT_NAME="android-use"
+SKIP_DEPENDENCIES_INSTALL="${ANDROID_USE_SKIP_DEPENDENCIES_INSTALL:-0}"
+SKIP_BUILD="${ANDROID_USE_SKIP_BUILD:-0}"
+SKIP_VERIFY="${ANDROID_USE_SKIP_VERIFY:-0}"
+
+is_truthy() {
+  case "$1" in
+    1|true|TRUE|yes|YES|on|ON) return 0 ;;
+    *) return 1 ;;
+  esac
+}
 
 # Set skill directory based on agent
 if [ "$AGENT" = "claude-code" ]; then
@@ -63,6 +73,10 @@ else
 fi
 
 REPO_DIR="$SKILL_DIR/repo"
+SCRIPTS_DIR="$SKILL_DIR/scripts"
+REFERENCES_DIR="$SKILL_DIR/references"
+ASSETS_DIR="$SKILL_DIR/assets"
+WRAPPER_SCRIPT="$SCRIPTS_DIR/$SCRIPT_NAME"
 
 echo "=== android-use Agent Installation ==="
 if [ -n "$AGENT" ]; then
@@ -122,72 +136,51 @@ echo ""
 # Install dependencies
 echo "Installing dependencies..."
 cd "$REPO_DIR"
-bun install
+if is_truthy "$SKIP_DEPENDENCIES_INSTALL"; then
+    echo "Skipping dependency install (ANDROID_USE_SKIP_DEPENDENCIES_INSTALL=$SKIP_DEPENDENCIES_INSTALL)"
+else
+    bun install
+fi
 echo "✓ Dependencies installed"
 echo ""
 
 # Build project
 echo "Building project..."
-bun run build
+if is_truthy "$SKIP_BUILD"; then
+    echo "Skipping build (ANDROID_USE_SKIP_BUILD=$SKIP_BUILD)"
+else
+    bun run build
+fi
 echo "✓ Build complete"
 echo ""
 
-# Create SKILL.md
-echo "Creating SKILL.md..."
-cat > "$SKILL_DIR/SKILL.md" << 'EOF'
-# android-use
+# Sync skill files to canonical folders
+echo "Syncing skill files..."
+mkdir -p "$SCRIPTS_DIR" "$REFERENCES_DIR" "$ASSETS_DIR"
 
-Control Android devices via ADB commands.
+cp "$REPO_DIR/SKILL.md" "$SKILL_DIR/SKILL.md"
 
-## Available Tools
+if [ -d "$REPO_DIR/references" ]; then
+    cp -R "$REPO_DIR/references/." "$REFERENCES_DIR/"
+elif [ -d "$REPO_DIR/examples" ]; then
+    cp -R "$REPO_DIR/examples/." "$REFERENCES_DIR/"
+fi
 
-- `android-use` - Main CLI tool for device control
+if [ -d "$REPO_DIR/assets" ]; then
+    cp -R "$REPO_DIR/assets/." "$ASSETS_DIR/"
+fi
 
-## Prerequisites
-
-- Android device with USB debugging enabled
-- ADB installed and in PATH
-- bun runtime
-
-## Usage
-
-```bash
-# Check device connection
-android-use check-device
-
-# Get screen UI hierarchy
-android-use get-screen
-
-# Tap on coordinates
-android-use tap 540 960
-
-# Type text
-android-use type-text "Hello World"
-
-# Press key
-android-use key HOME
-
-# Launch app
-android-use launch-app com.android.chrome
-
-# Swipe
-android-use swipe 540 1500 540 500
-```
-
-## Examples
-
-See `repo/examples/` directory for detailed usage examples.
-EOF
-echo "✓ SKILL.md created"
+echo "✓ SKILL.md, references, and assets synced"
 echo ""
 
-# Create wrapper script at skill root
+# Create wrapper script in scripts folder
 echo "Creating wrapper script..."
-cat > "$SKILL_DIR/$SCRIPT_NAME" << EOF
+cat > "$WRAPPER_SCRIPT" << EOF
 #!/bin/bash
-exec "$SKILL_DIR/repo/dist/index.js" "\$@"
+exec "$REPO_DIR/dist/index.js" "\$@"
 EOF
-chmod +x "$SKILL_DIR/$SCRIPT_NAME"
+chmod +x "$WRAPPER_SCRIPT"
+ln -sf "$WRAPPER_SCRIPT" "$SKILL_DIR/$SCRIPT_NAME"
 echo "✓ Wrapper script created"
 echo ""
 
@@ -199,10 +192,12 @@ elif [ -f "$HOME/.bashrc" ]; then
     SHELL_CONFIG="$HOME/.bashrc"
 fi
 
+PATH_ENTRY="$SCRIPTS_DIR"
+
 if [ -n "$SHELL_CONFIG" ]; then
-    if ! grep -q "$SKILL_DIR" "$SHELL_CONFIG" 2>/dev/null; then
+    if ! grep -Fq "$PATH_ENTRY" "$SHELL_CONFIG" 2>/dev/null; then
         echo "Adding to PATH in $SHELL_CONFIG..."
-        echo "export PATH=\"$SKILL_DIR:\$PATH\"" >> "$SHELL_CONFIG"
+        echo "export PATH=\"$PATH_ENTRY:\$PATH\"" >> "$SHELL_CONFIG"
         echo "✓ Added to PATH"
         echo ""
         echo "Note: Run 'source $SHELL_CONFIG' or restart your shell to use 'android-use' directly"
@@ -211,28 +206,42 @@ if [ -n "$SHELL_CONFIG" ]; then
     fi
 else
     echo "Could not find shell config file. Add this to your shell config:"
-    echo "export PATH=\"$SKILL_DIR:\$PATH\""
+    echo "export PATH=\"$PATH_ENTRY:\$PATH\""
 fi
 
 echo ""
 
 # Verify installation
 echo "Verifying installation..."
-if "$SKILL_DIR/$SCRIPT_NAME" check-device; then
+INSTALL_VERIFIED=true
+
+if is_truthy "$SKIP_VERIFY"; then
+    echo "Skipping device verification (ANDROID_USE_SKIP_VERIFY=$SKIP_VERIFY)"
+else
+    if "$WRAPPER_SCRIPT" check-device; then
+        INSTALL_VERIFIED=true
+    else
+        INSTALL_VERIFIED=false
+    fi
+fi
+
+if [ "$INSTALL_VERIFIED" = true ]; then
     echo ""
     echo "=== Installation Complete ==="
     echo ""
     echo "Structure:"
     echo "  $SKILL_DIR/"
-    echo "  ├── SKILL.md           # Skill metadata"
-    echo "  ├── android-use        # Wrapper script"
-    echo "  └── repo/              # Git repository"
-    echo "      ├── src/"
-    echo "      ├── dist/"
-    echo "      └── ..."
+    echo "  ├── SKILL.md             # Skill metadata + instructions"
+    echo "  ├── scripts/"
+    echo "  │   └── android-use      # CLI wrapper"
+    echo "  ├── references/          # Docs loaded into context"
+    echo "  ├── assets/              # Non-context skill assets"
+    echo "  ├── android-use          # Compatibility symlink"
+    echo "  └── repo/                # Git repository"
     echo ""
     echo "Usage:"
-    echo "  Direct: $SKILL_DIR/android-use <command>"
+    echo "  Direct: $SKILL_DIR/scripts/android-use <command>"
+    echo "  Compat: $SKILL_DIR/android-use <command>"
     echo "  Or if in PATH: android-use <command>"
     echo ""
     echo "Quick start:"
@@ -247,5 +256,5 @@ else
     echo "This is expected if no Android device is connected."
     echo ""
     echo "Structure created at: $SKILL_DIR/"
-    echo "To use: $SKILL_DIR/android-use <command>"
+    echo "To use: $SKILL_DIR/scripts/android-use <command>"
 fi

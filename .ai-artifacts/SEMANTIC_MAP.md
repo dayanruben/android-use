@@ -18,7 +18,7 @@ e android-use Semantic Map
 | `src/core/`      | Domain logic, types, contracts, parsers    |
 | `src/shell/`     | CLI layer, commands, providers, formatters |
 | `src/tests/`     | Unit tests mirroring source structure      |
-| `examples/`      | Usage tutorials and workflow guides        |
+| `references/`    | Usage tutorials and workflow guides        |
 | `dist/`          | Compiled output (build target)             |
 | `.ai-artifacts/` | AI-generated documentation (this file)     |
 

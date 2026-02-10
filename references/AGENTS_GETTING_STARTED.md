@@ -9,11 +9,12 @@ curl -fsSL https://raw.githubusercontent.com/iurysza/android-use/main/install.sh
 ```
 
 This automatically:
-1. Clones the repo to `~/.config/opencode/skill/android-use`
+1. Clones the repo to `~/.config/opencode/skill/android-use/repo`
 2. Installs dependencies with `bun install`
 3. Builds the project with `bun run build`
-4. Creates the wrapper script
-5. Verifies installation
+4. Syncs `SKILL.md`, `references/`, and `assets/`
+5. Creates wrapper script at `scripts/android-use`
+6. Verifies installation
 
 ## Manual Setup
 
@@ -21,8 +22,9 @@ If the automatic installer doesn't work:
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/iurysza/android-use.git ~/.config/opencode/skill/android-use
-cd ~/.config/opencode/skill/android-use
+mkdir -p ~/.config/opencode/skill/android-use
+git clone https://github.com/iurysza/android-use.git ~/.config/opencode/skill/android-use/repo
+cd ~/.config/opencode/skill/android-use/repo
 
 # 2. Install dependencies
 bun install
@@ -30,12 +32,24 @@ bun install
 # 3. Build
 bun run build
 
-# 4. Create wrapper
-ln -sf ~/.config/opencode/skill/android-use/dist/index.js ~/.config/opencode/skill/android-use/android-use
-chmod +x ~/.config/opencode/skill/android-use/android-use
+# 4. Sync skill files
+cp ~/.config/opencode/skill/android-use/repo/SKILL.md ~/.config/opencode/skill/android-use/SKILL.md
+mkdir -p ~/.config/opencode/skill/android-use/scripts ~/.config/opencode/skill/android-use/references ~/.config/opencode/skill/android-use/assets
+cp -R ~/.config/opencode/skill/android-use/repo/references/. ~/.config/opencode/skill/android-use/references/
+cp -R ~/.config/opencode/skill/android-use/repo/assets/. ~/.config/opencode/skill/android-use/assets/
 
-# 5. Verify
-~/.config/opencode/skill/android-use/android-use check-device
+# 5. Create wrapper
+cat > ~/.config/opencode/skill/android-use/scripts/android-use << 'EOF'
+#!/bin/bash
+exec ~/.config/opencode/skill/android-use/repo/dist/index.js "$@"
+EOF
+chmod +x ~/.config/opencode/skill/android-use/scripts/android-use
+
+# Optional compatibility symlink
+ln -sf ~/.config/opencode/skill/android-use/scripts/android-use ~/.config/opencode/skill/android-use/android-use
+
+# 6. Verify
+~/.config/opencode/skill/android-use/scripts/android-use check-device
 ```
 
 ## Prerequisites Check

@@ -10,7 +10,7 @@
 
 Control Android devices programmatically. Tap, swipe, type, launch apps, and automate UI interactions with structured, agent-friendly output.
 
-🤖 **Agents, start here:** [Getting Started Guide](./examples/AGENTS_GETTING_STARTED.md)
+🤖 **Agents, start here:** [Getting Started Guide](./references/AGENTS_GETTING_STARTED.md)
 
 ## Why android-use?
 
@@ -46,8 +46,8 @@ android-use launch-app com.android.chrome  # Launch app
 
 ## Documentation
 
-- [Agent Setup Guide](./examples/AGENTS_GETTING_STARTED.md) - Complete setup and usage guide
-- [Examples](./examples/) - Tutorials and common patterns
+- [Agent Setup Guide](./references/AGENTS_GETTING_STARTED.md) - Complete setup and usage guide
+- [References](./references/) - Tutorials and common patterns for agents
 - [Changelog](./CHANGELOG.md)
 
 ## License
