@@ -22,10 +22,15 @@ describe("install.sh smoke", () => {
 		const installScript = join(repoRoot, "install.sh");
 		const sandboxDir = await mkdtemp(join(tmpdir(), "android-use-install-"));
 		const homeDir = join(sandboxDir, "home");
+		const skillDir = join(homeDir, ".config/opencode/skill/android-use");
+		const legacyPathLine = `export PATH="${skillDir}:$PATH"`;
 
 		try {
 			await mkdir(homeDir, { recursive: true });
-			await writeFile(join(homeDir, ".zshrc"), "# test shell config\n");
+			await writeFile(
+				join(homeDir, ".zshrc"),
+				`# test shell config\n${legacyPathLine}\n`,
+			);
 
 			const proc = Bun.spawnSync({
 				cmd: ["bash", installScript, "--non-interactive"],
@@ -51,7 +56,6 @@ describe("install.sh smoke", () => {
 
 			expect(proc.exitCode).toBe(0);
 
-			const skillDir = join(homeDir, ".config/opencode/skill/android-use");
 			const scriptsDir = join(skillDir, "scripts");
 			const referencesDir = join(skillDir, "references");
 			const assetsDir = join(skillDir, "assets");
@@ -72,6 +76,7 @@ describe("install.sh smoke", () => {
 			expect(lstatSync(compatibilityScript).isSymbolicLink()).toBe(true);
 
 			const shellConfig = readFileSync(join(homeDir, ".zshrc"), "utf8");
+			expect(shellConfig).not.toContain(legacyPathLine);
 			expect(shellConfig).toContain(`export PATH="${scriptsDir}:$PATH"`);
 		} finally {
 			await rm(sandboxDir, { recursive: true, force: true });

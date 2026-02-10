@@ -162,8 +162,6 @@ cp "$REPO_DIR/SKILL.md" "$SKILL_DIR/SKILL.md"
 
 if [ -d "$REPO_DIR/references" ]; then
     cp -R "$REPO_DIR/references/." "$REFERENCES_DIR/"
-elif [ -d "$REPO_DIR/examples" ]; then
-    cp -R "$REPO_DIR/examples/." "$REFERENCES_DIR/"
 fi
 
 if [ -d "$REPO_DIR/assets" ]; then
@@ -193,8 +191,18 @@ elif [ -f "$HOME/.bashrc" ]; then
 fi
 
 PATH_ENTRY="$SCRIPTS_DIR"
+LEGACY_PATH_LINE="export PATH=\"$SKILL_DIR:\$PATH\""
 
 if [ -n "$SHELL_CONFIG" ]; then
+    if grep -Fqx "$LEGACY_PATH_LINE" "$SHELL_CONFIG" 2>/dev/null; then
+        echo "Removing legacy PATH entry from $SHELL_CONFIG..."
+        TMP_SHELL_CONFIG="$(mktemp)"
+        grep -Fvx "$LEGACY_PATH_LINE" "$SHELL_CONFIG" > "$TMP_SHELL_CONFIG" || true
+        cat "$TMP_SHELL_CONFIG" > "$SHELL_CONFIG"
+        rm -f "$TMP_SHELL_CONFIG"
+        echo "✓ Removed legacy PATH entry"
+    fi
+
     if ! grep -Fq "$PATH_ENTRY" "$SHELL_CONFIG" 2>/dev/null; then
         echo "Adding to PATH in $SHELL_CONFIG..."
         echo "export PATH=\"$PATH_ENTRY:\$PATH\"" >> "$SHELL_CONFIG"
